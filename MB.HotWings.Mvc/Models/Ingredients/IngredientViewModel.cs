@@ -1,16 +1,15 @@
 ﻿using MB.HotWings.Entities.Meals;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MB.HotWings.Entities.Ingredients
+namespace MB.HotWings.Mvc.Models.Ingredients
 {
-    public class Ingredient
+    public class IngredientViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [Column(TypeName = "decimal(6,2)")] 
+        [Column(TypeName = "decimal(6,2)")]
         public decimal Price { get; set; }
-
-        public List<Meal> Meals { get; set; } = [];
     }
 }

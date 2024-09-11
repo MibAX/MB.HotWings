@@ -1,0 +1,56 @@
+﻿@using MB.HotWings.Mvc.Models.Ingredients
+@model IEnumerable<IngredientViewModel>
+
+@{
+    ViewData["Title"] = "Ingredients";
+}
+
+<h1>Ingredients</h1>
+
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create a New Ingredient</a>
+</p>
+
+<hr />
+
+<table class="table data-tables table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@item.Id" title="Edit">
+                        <i class="fa-solid fa-pen-fancy"></i>
+                    </a>
+                    <a class="text-decoration-none ms-2 text-info" asp-action="Details" asp-route-id="@item.Id" title="Details">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                    <a class="text-decoration-none ms-2 text-danger" asp-action="Delete" asp-route-id="@item.Id" title="Delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
