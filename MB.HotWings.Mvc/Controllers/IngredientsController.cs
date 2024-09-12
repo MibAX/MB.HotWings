@@ -18,10 +18,13 @@ namespace MB.HotWings.Mvc.Controllers
         {
             _context = context;
             _mapper = mapper;
-        } 
+        }
 
         #endregion
 
+        #region Actions
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var ingredients = await _context
@@ -34,6 +37,7 @@ namespace MB.HotWings.Mvc.Controllers
             return View(ingredientVMs);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,16 +45,21 @@ namespace MB.HotWings.Mvc.Controllers
                 return NotFound();
             }
 
-            var ingredient = await _context.Ingredients
-                .FirstOrDefaultAsync(m => m.Id == id); // 117 => 404 Not Fount
+            var ingredient = await _context
+                                        .Ingredients
+                                        .FindAsync(id);
+
             if (ingredient == null)
             {
                 return NotFound();
             }
 
-            return View(ingredient);
+            var ingredientVM = _mapper.Map<IngredientDetailsViewModel>(ingredient);
+
+            return View(ingredientVM);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -58,17 +67,22 @@ namespace MB.HotWings.Mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price")] Ingredient ingredient)
+        public async Task<IActionResult> Create(CreateUpdateIngredientViewModel createUpdateIngredientVM)
         {
             if (ModelState.IsValid)
             {
+                var ingredient = _mapper.Map<Ingredient>(createUpdateIngredientVM);
+
                 _context.Add(ingredient);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(ingredient);
+
+            return View(createUpdateIngredientVM);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,80 +90,78 @@ namespace MB.HotWings.Mvc.Controllers
                 return NotFound();
             }
 
-            var ingredient = await _context.Ingredients.FindAsync(id);
+            var ingredient = await _context
+                                        .Ingredients
+                                        .FindAsync(id);
+
             if (ingredient == null)
             {
                 return NotFound();
             }
-            return View(ingredient);
+
+            var createUpdateIngredientVM = _mapper.Map<CreateUpdateIngredientViewModel>(ingredient);
+
+            return View(createUpdateIngredientVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price")] Ingredient ingredient)
+        public async Task<IActionResult> Edit(int id, CreateUpdateIngredientViewModel createUpdateIngredientVM)
         {
-            if (id != ingredient.Id)
+            if (id != createUpdateIngredientVM.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                // Get ingredient from the DB
+                var ingredient = await  _context
+                                            .Ingredients
+                                            .FindAsync(id);
+
+                if(ingredient == null)
                 {
-                    _context.Update(ingredient);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!IngredientExists(ingredient.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                // Patch (Copy) the createUpdateIngredientVM into the ingredient
+                _mapper.Map(createUpdateIngredientVM, ingredient);
+
+                // Update in the _context and save
+                _context.Update(ingredient);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(ingredient);
+
+            return View(createUpdateIngredientVM);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id) // 1 => Tomato
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var ingredient = await _context
+                                    .Ingredients
+                                    .FindAsync(id); // Get Tomato
 
-            var ingredient = await _context.Ingredients
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (ingredient == null)
             {
-                return NotFound();
-            }
+                return RedirectToAction(nameof(Index));
+            } // If tomato is not in the DB return to Index page
+            
+            
+            _context.Ingredients.Remove(ingredient); // Remove Tomato memory
+            await _context.SaveChangesAsync(); // Confirm deleting Tomato from DB
 
-            return View(ingredient);
+            return RedirectToAction(nameof(Index)); // Return to index page
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ingredient = await _context.Ingredients.FindAsync(id);
-            if (ingredient != null)
-            {
-                _context.Ingredients.Remove(ingredient);
-            }
+        #endregion
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        #region Private Methods
 
-        private bool IngredientExists(int id)
-        {
-            return _context.Ingredients.Any(e => e.Id == id);
-        }
+        #endregion
     }
 }
