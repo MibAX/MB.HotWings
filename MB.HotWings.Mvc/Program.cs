@@ -1,3 +1,4 @@
+using MB.HotWings.Mvc.AppSettings;
 using MB.HotWings.Mvc.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,13 @@ namespace MB.HotWings.Mvc
 
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllersWithViews();
+
+            builder.Services.Configure<HotWingsSettings>(builder.Configuration.GetSection("HotWingsSettings"));
+
+
+
+
+
 
             var app = builder.Build();
 

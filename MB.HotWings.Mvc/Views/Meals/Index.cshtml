@@ -1,0 +1,88 @@
+﻿@using MB.HotWings.Mvc.Models.Meals
+@model IEnumerable<MealViewModel>
+
+@{
+    ViewData["Title"] = "Meals";
+}
+
+<h1>Meals</h1>
+
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create a New Meal</a>
+</p>
+
+<hr />
+
+<table class="table table-striped table-hover data-tables">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var meal in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => meal.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => meal.Price)
+                    <span>JOD</span>
+                </td>
+                <td>
+                    <a class="text-decoration-none" asp-action="Edit" asp-route-id="@meal.Id" title="Edit">
+                        <i class="fa-solid fa-pen-fancy"></i>
+                    </a>
+                    <a class="text-decoration-none ms-2 text-info" asp-action="Details" asp-route-id="@meal.Id" title="Details">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                    <a href="#" class="text-decoration-none ms-2 text-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal_@meal.Id">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteModal_@meal.Id" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="deleteModalLabel">Delete Meal</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h3>
+                                        Are you sure you want to delete meal <span class="text-danger">@meal.Name</span>?
+                                    </h3>
+                                </div>
+                                <div class="modal-footer">
+
+                                    <form asp-action="Delete">
+
+                                        <input type="hidden" name="id" value="@meal.Id" />
+
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <input type="submit" value="Delete" class="btn btn-danger ms-2" />
+                                    </form>
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,37 @@
+﻿@using MB.HotWings.Mvc.Models.Meals
+@model MealDetailsViewModel
+
+@{
+    ViewData["Title"] = "Meal Details";
+}
+
+<h1>Meal Details</h1>
+
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+            <span>JOD</span>
+        </dd>
+    </dl>
+</div>
+
+<hr />
+
+@* TO DO add table of ingredients  *@
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

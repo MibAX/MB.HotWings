@@ -1,0 +1,43 @@
+﻿@using MB.HotWings.Mvc.Models.Meals
+@model CreateUpdateMealViewModel
+
+@{
+    ViewData["Title"] = "Edit Meal";
+}
+
+<h1>
+    Edit Meal
+    <span class="text-primary">@Model.Name</span>
+</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mt-2">
+                <label asp-for="IngredientIds" class="control-label"></label>
+                <select asp-for="IngredientIds" asp-items="@Model.IngredientLookup" class="form-control select-2"></select>
+                <span asp-validation-for="IngredientIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <input type="submit" value="Save" class="btn btn-primary ms-2" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
