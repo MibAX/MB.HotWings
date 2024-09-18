@@ -5,7 +5,10 @@
     ViewData["Title"] = "Meal Details";
 }
 
-<h1>Meal Details</h1>
+<h1>
+    Meal Details
+    <span class="text-primary">@Model.Name</span>    
+</h1>
 
 <hr />
 
@@ -29,9 +32,47 @@
 
 <hr />
 
-@* TO DO add table of ingredients  *@
+<h3>Ingredients</h3>
+
+<table class="table data-tables table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ingredient in Model.Ingredients)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => ingredient.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => ingredient.Price)
+                    <span>JOD</span>
+                </td>
+                <td>
+                    <a class="text-decoration-none ms-2 text-info" asp-controller="Ingredients" asp-action="Details" asp-route-id="@ingredient.Id" title="Details">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<hr />
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary ms-2">Edit</a>
 </div>
