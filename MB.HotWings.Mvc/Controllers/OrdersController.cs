@@ -31,6 +31,7 @@ namespace MB.HotWings.Mvc.Controllers
         {
             var orders = await _context
                                     .Orders
+                                    .Include(order => order)
                                     .ToListAsync();
 
             var orderVMs = _mapper.Map<List<Order>, List<OrderViewModel>>(orders);
@@ -46,8 +47,8 @@ namespace MB.HotWings.Mvc.Controllers
             }
 
             var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                                    .Include(o => o.Customer)
+                                    .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
